@@ -1,0 +1,12 @@
+services:
+  sing-box:
+    image: ghcr.io/sagernet/sing-box:v1.12.4
+    container_name: sing-box
+    restart: always
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - ./conf/:/etc/sing-box/
+    command: -D /var/lib/sing-box -C /etc/sing-box/ run
+    ports:
+      - 10808:10808

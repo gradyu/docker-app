@@ -1,0 +1,16 @@
+# 监听端口
+bindPort = 7000
+# 设置域名
+subDomainHost = "annieyu.com"
+# 面板
+webServer.addr = "0.0.0.0"
+webServer.port = 7500
+webServer.user = "admin"
+webServer.password = "admin0@annieyu"
+# 设置http及https协议下代理端口
+vhostHTTPPort = 18080
+vhostHTTPSPort = 18443
+tcpmuxHTTPConnectPort = 2355
+# 身份验证
+auth.method = "token"
+auth.token = "frp@annieyu"

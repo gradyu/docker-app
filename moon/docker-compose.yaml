@@ -1,0 +1,14 @@
+services:
+  zerotier-moon:
+    image: jerryin/zerotier-moon
+    restart: always
+    container_name: zerotier-moon
+    network_mode: host
+    volumes:
+      - ./data:/var/lib/zerotier-one
+    command: -4 47.96.82.225
+    devices:
+      - /dev/net/tun
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN

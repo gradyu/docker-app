@@ -1,0 +1,12 @@
+services:
+  fakessh:
+    container_name: fakessh
+    image: fffaraz/fakessh
+    restart: always
+    ports:
+      - 22:22
+    command: /log
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - ./logs:/log

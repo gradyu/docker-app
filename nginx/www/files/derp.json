@@ -1,0 +1,19 @@
+{
+  "Regions": {
+    "901": {
+      "RegionID": 901,
+      "RegionCode": "ali",
+      "RegionName": "ALIYUN",
+      "Nodes": [
+        {
+          "Name": "901a",
+          "RegionID": 901,
+          "DERPPort": 36666,
+          "HostName": "47.96.82.225",
+          "IPv4": "47.96.82.225",
+          "InsecureForTests": true
+        }
+      ]
+    }
+  }
+}

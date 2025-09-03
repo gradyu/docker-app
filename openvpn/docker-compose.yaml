@@ -1,0 +1,14 @@
+services:
+  openvpn:
+    image: kylemanna/openvpn
+    container_name: openvpn
+    restart: always
+    command: openvpn --config /etc/openvpn/openvpn.conf
+    network_mode: host
+    devices:
+      - /dev/net/tun
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+    volumes:
+      - ./conf:/etc/openvpn
