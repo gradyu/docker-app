@@ -1,6 +1,6 @@
 services:
   sing-box:
-    image: ghcr.io/sagernet/sing-box:v1.12.4
+    image: ghcr.io/sagernet/sing-box:v1.12.12
     container_name: sing-box
     restart: always
     environment:

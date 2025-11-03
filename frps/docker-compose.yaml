@@ -1,6 +1,6 @@
 services:
   frps:
-    image: snowdreamtech/frps:0.61.0
+    image: snowdreamtech/frps:0.64.0
     restart: always
     container_name: frps
     volumes:
