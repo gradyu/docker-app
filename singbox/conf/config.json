@@ -1,50 +1,254 @@
 {
   "log": {
+    "disabled": false,
     "level": "info",
     "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "tag": "dns_proxy",
+        "type": "https",
+        "server": "1.1.1.1",
+        "server_port": 443,
+        "detour": "自动选择",
+        "path": "/dns-query",
+        "domain_resolver": "dns_resolver"
+      },
+      {
+        "tag": "dns_direct",
+        "type": "h3",
+        "server": "dns.alidns.com",
+        "server_port": 443,
+        "path": "/dns-query",
+        "domain_resolver": "dns_resolver"
+      },
+      {
+        "tag": "google",
+        "type": "tls",
+        "server": "8.8.4.4",
+        "domain_resolver": "dns_resolver"
+      },
+      {
+        "tag": "dns_resolver",
+        "type": "udp",
+        "server": "114.114.114.114"
+      },
+      {
+        "type": "local",
+        "tag": "local"
+      }
+    ],
+    "rules": [
+      {
+        "action": "route",
+        "clash_mode": "direct",
+        "server": "dns_direct"
+      },
+      {
+        "action": "route",
+        "clash_mode": "global",
+        "server": "dns_proxy"
+      },
+      {
+        "action": "route",
+        "rule_set": "geosite-cn",
+        "server": "dns_direct"
+      },
+      {
+        "action": "route",
+        "rule_set": "geosite-geolocation-!cn",
+        "server": "dns_proxy"
+      }
+    ],
+    "independent_cache": true,
+    "strategy": "prefer_ipv4",
+    "final": "dns_direct"
   },
   "inbounds": [
     {
       "type": "mixed",
       "listen": "::",
       "listen_port": 10808,
-      "tcp_fast_open": true,
-      "udp_fragment": true,
       "sniff": true,
-      "sniff_override_destination": true,
-      "set_system_proxy": false
+      "users": []
     }
   ],
   "outbounds": [
     {
+      "type": "urltest",
+      "tag": "自动选择",
+      "outbounds": [
+        "bd2a6223-VLESS_TCP/TLS_Vision",
+        "bd2a6223-VLESS_Reality_Vision",
+        "bd2a6223-VLESS_Reality_gPRC"
+      ],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "3m",
+      "tolerance": 50,
+      "interrupt_exist_connections": false
+    },
+    {
+      "type": "selector",
+      "tag": "手动切换",
+      "outbounds": [
+	    "hongkong-VLESS_Reality_Vision",
+        "bd2a6223-VLESS_Reality_Vision",
+        "bd2a6223-VLESS_Reality_gPRC",
+		"bd2a6223-VLESS_TCP/TLS_Vision"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "Telegram",
+      "outbounds": [
+        "手动切换",
+        "自动选择",
+        "bd2a6223-VLESS_TCP/TLS_Vision",
+        "bd2a6223-VLESS_Reality_Vision",
+        "bd2a6223-VLESS_Reality_gPRC"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "YouTube",
+      "outbounds": [
+        "手动切换",
+        "自动选择",
+        "bd2a6223-VLESS_TCP/TLS_Vision",
+        "bd2a6223-VLESS_Reality_Vision",
+        "bd2a6223-VLESS_Reality_gPRC"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "netflix",
+      "outbounds": [
+        "手动切换",
+        "自动选择",
+        "bd2a6223-VLESS_TCP/TLS_Vision",
+        "bd2a6223-VLESS_Reality_Vision",
+        "bd2a6223-VLESS_Reality_gPRC"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "OpenAI",
+      "outbounds": [
+        "手动切换",
+        "自动选择",
+        "bd2a6223-VLESS_TCP/TLS_Vision",
+        "bd2a6223-VLESS_Reality_Vision",
+        "bd2a6223-VLESS_Reality_gPRC"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "Apple",
+      "outbounds": [
+        "手动切换",
+        "自动选择",
+        "direct",
+        "bd2a6223-VLESS_TCP/TLS_Vision",
+        "bd2a6223-VLESS_Reality_Vision",
+        "bd2a6223-VLESS_Reality_gPRC"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "Google",
+      "outbounds": [
+        "手动切换",
+        "自动选择",
+        "bd2a6223-VLESS_TCP/TLS_Vision",
+        "bd2a6223-VLESS_Reality_Vision",
+        "bd2a6223-VLESS_Reality_gPRC"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "Microsoft",
+      "outbounds": [
+        "手动切换",
+        "自动选择",
+        "direct",
+        "bd2a6223-VLESS_TCP/TLS_Vision",
+        "bd2a6223-VLESS_Reality_Vision",
+        "bd2a6223-VLESS_Reality_gPRC"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "Github",
+      "outbounds": [
+        "手动切换",
+        "自动选择",
+        "direct",
+        "bd2a6223-VLESS_TCP/TLS_Vision",
+        "bd2a6223-VLESS_Reality_Vision",
+        "bd2a6223-VLESS_Reality_gPRC"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "本地直连",
+      "outbounds": [
+        "direct",
+        "手动切换",
+        "自动选择",
+        "bd2a6223-VLESS_TCP/TLS_Vision",
+        "bd2a6223-VLESS_Reality_Vision",
+        "bd2a6223-VLESS_Reality_gPRC"
+      ],
+      "default": "direct"
+    },
+    {
+      "tag": "direct",
+      "type": "direct"
+    },
+    {
+      "tag": "bd2a6223-VLESS_TCP/TLS_Vision",
       "type": "vless",
-      "tag": "rack-vless-reality-grpc",
-      "server": "23.94.168.93",
-      "server_port": 27692,
-      "uuid": "9bdb0597-1e98-4748-83ce-72aff0df0565",
+      "server": "bag.annieyu.com",
+      "server_port": 34198,
+      "uuid": "bd2a6223-3507-41d2-92ed-e8c174035cbd",
+      "flow": "xtls-rprx-vision",
       "tls": {
         "enabled": true,
-        "server_name": "www.apple.com",
+        "server_name": "bag.annieyu.com",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "packet_encoding": "xudp"
+    },
+    {
+      "tag": "bd2a6223-VLESS_Reality_Vision",
+      "type": "vless",
+      "server": "93.179.98.227",
+      "server_port": 21601,
+      "uuid": "bd2a6223-3507-41d2-92ed-e8c174035cbd",
+      "flow": "xtls-rprx-vision",
+      "tls": {
+        "enabled": true,
+        "server_name": "itunes.apple.com",
         "utls": {
           "enabled": true,
           "fingerprint": "chrome"
         },
         "reality": {
           "enabled": true,
-          "public_key": "GdXmQ9tRCEF15igGSxIgN8cM_NzNjEqm2mvlbjUuqxA",
+          "public_key": "kuzNYVxP--fFsPKrM_2VmYC-t4L3Hx0hDcZze0wI-WA",
           "short_id": "6ba85179e30d4fc2"
         }
       },
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "grpc",
-        "service_name": "grpc"
-      }
+      "packet_encoding": "xudp"
     },
     {
+      "tag": "bd2a6223-VLESS_Reality_gPRC",
       "type": "vless",
-      "tag": "bag-vless-reality-grpc",
-      "server": "bag.annieyu.com",
+      "server": "93.179.98.227",
       "server_port": 42033,
       "uuid": "bd2a6223-3507-41d2-92ed-e8c174035cbd",
       "tls": {
@@ -66,19 +270,259 @@
         "service_name": "grpc"
       }
     },
-    {
-      "type": "direct",
-      "tag": "direct"
-    },
-    {
-      "type": "block",
-      "tag": "block"
+	{
+      "tag": "hongkong-VLESS_Reality_Vision",
+      "type": "vless",
+      "server": "admin.annieyu.com",
+      "server_port": 10808,
+      "uuid": "d872b789-11de-4b39-8513-846f8ac9170c",
+      "flow": "xtls-rprx-vision",
+      "tls": {
+        "enabled": true,
+        "server_name": "www.apple.com",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        },
+        "reality": {
+          "enabled": true,
+          "public_key": "060GKaUHo8NwIdGmWazEBKrJ61akstwYu1PkklSG1A0",
+          "short_id": "1f23fc9a7a5e6be6"
+        }
+      },
+      "packet_encoding": "xudp"
     }
   ],
   "route": {
+    "default_domain_resolver": {
+      "server": "dns_resolver",
+      "strategy": "prefer_ipv4"
+    },
+    "rule_set": [
+      {
+        "tag": "geosite-category-ads-all",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/category-ads-all.srs",
+        "update_interval": "1d"
+      },
+      {
+        "tag": "geosite-telegram",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/telegram.srs",
+        "update_interval": "1d"
+      },
+      {
+        "tag": "geoip-telegram",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geoip/telegram.srs",
+        "update_interval": "1d"
+      },
+      {
+        "tag": "geosite-youtube",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/youtube.srs",
+        "update_interval": "1d"
+      },
+      {
+        "tag": "geosite-netflix",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/netflix.srs",
+        "update_interval": "1d"
+      },
+      {
+        "tag": "geoip-netflix",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geoip/netflix.srs",
+        "update_interval": "1d"
+      },
+      {
+        "tag": "geosite-openai@ads",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/openai@ads.srs",
+        "update_interval": "1d"
+      },
+      {
+        "tag": "geosite-openai",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/openai.srs",
+        "update_interval": "1d"
+      },
+      {
+        "tag": "geosite-apple",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/apple.srs",
+        "update_interval": "1d"
+      },
+      {
+        "tag": "geosite-google",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/google.srs",
+        "update_interval": "1d"
+      },
+      {
+        "tag": "geoip-google",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geoip/google.srs",
+        "update_interval": "1d"
+      },
+      {
+        "tag": "geosite-microsoft",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/microsoft.srs",
+        "update_interval": "1d"
+      },
+      {
+        "tag": "geosite-geolocation-!cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/geolocation-!cn.srs",
+        "update_interval": "1d"
+      },
+      {
+        "tag": "geosite-github",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/github.srs",
+        "update_interval": "1d"
+      },
+      {
+        "tag": "geosite-private",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/private.srs",
+        "update_interval": "1d"
+      },
+      {
+        "tag": "geosite-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/cn.srs",
+        "update_interval": "1d"
+      },
+      {
+        "tag": "geoip-private",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geoip/private.srs",
+        "update_interval": "1d"
+      },
+      {
+        "tag": "geoip-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geoip/cn.srs",
+        "update_interval": "1d"
+      }
+    ],
     "rules": [
       {
-        "outbound": "direct",
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "clash_mode": "global",
+        "outbound": "手动切换"
+      },
+      {
+        "clash_mode": "direct",
+        "outbound": "本地直连"
+      },
+      {
+        "type": "logical",
+        "mode": "or",
+        "rules": [
+          {
+            "rule_set": "geosite-category-ads-all"
+          },
+          {
+            "domain_regex": "^stun\\..+"
+          },
+          {
+            "domain_keyword": [
+              "stun",
+              "httpdns"
+            ]
+          },
+          {
+            "protocol": "stun"
+          }
+        ],
+        "action": "reject",
+        "method": "default",
+        "no_drop": false
+      },
+      {
+        "rule_set": [
+          "geosite-telegram",
+          "geoip-telegram"
+        ],
+        "outbound": "Telegram"
+      },
+      {
+        "rule_set": "geosite-youtube",
+        "outbound": "YouTube"
+      },
+      {
+        "rule_set": [
+          "geosite-netflix",
+          "geoip-netflix"
+        ],
+        "outbound": "netflix"
+      },
+      {
+        "rule_set": "geosite-openai@ads",
+        "action": "reject",
+        "method": "default",
+        "no_drop": false
+      },
+      {
+        "rule_set": "geosite-openai",
+        "outbound": "OpenAI"
+      },
+      {
+        "rule_set": "geosite-apple",
+        "outbound": "Apple"
+      },
+      {
+        "rule_set": [
+          "geosite-google",
+          "geoip-google"
+        ],
+        "outbound": "Google"
+      },
+      {
+        "rule_set": "geosite-microsoft",
+        "outbound": "Microsoft"
+      },
+      {
+        "rule_set": "geosite-github",
+        "outbound": "Github"
+      },
+      {
+        "rule_set": "geosite-geolocation-!cn",
+        "outbound": "手动切换"
+      },
+	  {
+        "outbound": "本地直连",
         "domain": [
           "frutech.com",
           "frutech.com.cn",
@@ -95,39 +539,16 @@
         ]
       },
       {
-        "rule_set": "geosite-cn",
-        "outbound": "direct"
-      },
-      {
-        "ip_is_private": true,
-        "outbound": "direct"
-      },
-      {
-        "rule_set": "geoip-cn",
-        "outbound": "direct"
-      },
-      {
-        "outbound": "bag-vless-reality-grpc",
-        "port_range": ["0:65535"]
+        "rule_set": [
+          "geosite-private",
+          "geosite-cn",
+          "geoip-private",
+          "geoip-cn"
+        ],
+        "outbound": "本地直连"
       }
     ],
-    "rule_set": [
-      {
-        "tag": "geoip-cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geoip/cn.srs",
-        "update_interval": "1d",
-        "download_detour": "bag-vless-reality-grpc"
-      },
-      {
-        "tag": "geosite-cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/cn.srs",
-        "update_interval": "1d",
-        "download_detour": "bag-vless-reality-grpc"
-      }
-    ]
+    "final": "本地直连",
+    "auto_detect_interface": true
   }
 }
