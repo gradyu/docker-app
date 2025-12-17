@@ -13,4 +13,4 @@ vhostHTTPSPort = 18443
 tcpmuxHTTPConnectPort = 2355
 # 身份验证
 auth.method = "token"
-auth.token = "frp@annieyu"
+auth.token = "frp0@annieyu"
