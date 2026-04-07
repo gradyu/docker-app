@@ -70,7 +70,6 @@
       "type": "mixed",
       "listen": "::",
       "listen_port": 10808,
-      "sniff": true,
       "users": []
     }
   ],
