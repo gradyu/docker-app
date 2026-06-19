@@ -1,0 +1,57 @@
+services:
+  headscale:
+    image: docker.io/headscale/headscale:0.28
+    restart: unless-stopped
+    container_name: headscale
+    read_only: true
+    tmpfs:
+      - /var/run/headscale
+    environment:
+      - TZ=Asia/Shanghai
+    networks:
+      - traefik
+    volumes:
+      - ./config:/etc/headscale:ro
+      - ./lib:/var/lib/headscale
+    command: serve
+    healthcheck:
+      test: ["CMD", "headscale", "health"]
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: "traefik"
+      # Headscale Service Configuration
+      traefik.http.services.headscale.loadbalancer.server.port: 8080
+      traefik.http.services.headscale.loadbalancer.server.scheme: http
+      traefik.http.routers.headscale.rule: Host(`hs.annieyu.com`)
+      traefik.http.routers.headscale.entrypoints: websecure
+      traefik.http.routers.headscale.tls.certresolver: cloudflare
+      traefik.http.routers.headscale.service: headscale
+      # CORS Middleware Configuration
+      #traefik.http.middlewares.headscale-cors.headers.accessControlAllowMethods: "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+      #traefik.http.middlewares.headscale-cors.headers.accessControlAllowHeaders: "Authorization,Content-Type"
+      #traefik.http.middlewares.headscale-cors.headers.accessControlAllowOriginList: "https://hs.annieyu.com"
+      #traefik.http.middlewares.headscale-cors.headers.accessControlMaxAge: 100
+      #traefik.http.middlewares.headscale-cors.headers.addVaryHeader: true
+      # Attach Middleware to Router
+      #traefik.http.routers.headscale.middlewares: headscale-cors
+
+  headscale-admin:
+    image: ghcr.io/gurucomputing/headscale-ui:latest
+    container_name: headscale-ui
+    restart: unless-stopped
+    networks:
+      - traefik
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: "traefik"
+      # Headscale Admin Service Configuration
+      traefik.http.services.headscale-ui.loadbalancer.server.port: 8080
+      traefik.http.services.headscale-ui.loadbalancer.server.scheme: http
+      traefik.http.routers.headscale-ui.rule: Host(`hs.annieyu.com`) && PathPrefix(`/web`)
+      traefik.http.routers.headscale-ui.entrypoints: websecure
+      traefik.http.routers.headscale-ui.tls.certresolver: cloudflare
+
+
+networks:
+  traefik:
+    external: true

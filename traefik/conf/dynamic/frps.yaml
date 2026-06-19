@@ -1,0 +1,15 @@
+http:
+  routers:
+    frps:
+      rule: "Host(`frps.annieyu.com`)"
+      entryPoints:
+        - "websecure"
+      tls:
+        certResolver: "cloudflare"
+      service: frps
+  services:
+    frps:
+      loadBalancer:
+        servers:
+          - url: "http://10.1.89.2:7500"
+

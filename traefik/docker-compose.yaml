@@ -1,0 +1,39 @@
+services:
+  traefik:
+    image: traefik:v3.6
+    restart: always
+    container_name: traefik
+    environment:
+      TZ: Asia/Shanghai
+      CF_API_EMAIL: yhwei876@qq.com
+      CF_DNS_API_TOKEN: cfat_CIy8imx7rHDJWXNbKiU5uBkOQINl6SgQHH5xxz9Jb00b79da
+    volumes:
+      - acme:/etc/acme/
+      - ./conf/:/etc/traefik/:ro
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - traefik
+    labels:
+      # Enable Traefik for itself (dashboard via a dedicated router)
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
+      - "traefik.http.routers.dashboard.rule=Host(`traefik.annieyu.com`)"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.middlewares=auth"
+      - "traefik.http.routers.dashboard.tls=true"
+      - "traefik.http.routers.dashboard.tls.certresolver=cloudflare"
+      - "traefik.http.routers.dashboard.tls.domains[0].main=annieyu.com"
+      - "traefik.http.routers.dashboard.tls.domains[0].sans=*.annieyu.com"
+      - "traefik.http.middlewares.auth.basicauth.users=admin:$$apr1$$RZ1TFgYw$$cTd9lmg6MUqfBknUyRc6c/"
+
+networks:
+  traefik:
+    external: true
+
+volumes:
+  acme:
+
