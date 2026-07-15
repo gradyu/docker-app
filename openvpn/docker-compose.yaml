@@ -3,7 +3,7 @@ services:
     image: kylemanna/openvpn
     container_name: openvpn
     restart: always
-    command: openvpn --config /etc/openvpn/openvpn.conf
+    command: openvpn --config /etc/openvpn/shiyan.ovpn
     network_mode: host
     devices:
       - /dev/net/tun
