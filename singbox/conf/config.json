@@ -1,276 +1,115 @@
 {
   "log": {
-    "disabled": false,
-    "level": "info",
+    "level": "warn",
     "timestamp": true
   },
   "dns": {
     "servers": [
       {
-        "tag": "dns_proxy",
-        "type": "https",
-        "server": "1.1.1.1",
-        "server_port": 443,
-        "detour": "自动选择",
-        "path": "/dns-query",
-        "domain_resolver": "dns_resolver"
-      },
-      {
-        "tag": "dns_direct",
-        "type": "h3",
-        "server": "dns.alidns.com",
-        "server_port": 443,
-        "path": "/dns-query",
-        "domain_resolver": "dns_resolver"
-      },
-      {
-        "tag": "google",
         "type": "tls",
-        "server": "8.8.4.4",
-        "domain_resolver": "dns_resolver"
+        "tag": "google",
+        "detour": "♻️ 自动选择",
+        "server": "8.8.8.8"
       },
       {
-        "tag": "dns_resolver",
-        "type": "udp",
-        "server": "114.114.114.114"
+        "type": "https",
+        "tag": "local",
+        "server": "223.5.5.5"
       },
       {
-        "type": "local",
-        "tag": "local"
+        "type": "fakeip",
+        "tag": "fakeip",
+        "inet4_range": "198.18.0.0/15"
       }
     ],
     "rules": [
       {
-        "action": "route",
-        "clash_mode": "direct",
-        "server": "dns_direct"
+        "clash_mode": "Direct",
+        "server": "local"
       },
       {
-        "action": "route",
-        "clash_mode": "global",
-        "server": "dns_proxy"
+        "clash_mode": "Global",
+        "server": "google"
       },
       {
-        "action": "route",
+        "query_type": ["AAAA"],
+        "server": "block"
+      },
+      {
         "rule_set": "geosite-cn",
-        "server": "dns_direct"
+        "server": "local"
       },
       {
-        "action": "route",
-        "rule_set": "geosite-geolocation-!cn",
-        "server": "dns_proxy"
+        "query_type": ["A"],
+        "server": "fakeip"
       }
     ],
-    "independent_cache": true,
     "strategy": "prefer_ipv4",
-    "final": "dns_direct"
+    "independent_cache": true
   },
   "inbounds": [
     {
       "type": "mixed",
       "listen": "::",
-      "listen_port": 10808,
-      "users": []
+      "listen_port": 10808
     }
   ],
   "outbounds": [
     {
-      "type": "urltest",
-      "tag": "自动选择",
-      "outbounds": [
-        "bd2a6223-VLESS_TCP/TLS_Vision",
-        "bd2a6223-VLESS_Reality_Vision",
-        "bd2a6223-VLESS_Reality_gPRC"
-      ],
-      "url": "https://www.gstatic.com/generate_204",
-      "interval": "3m",
-      "tolerance": 50,
-      "interrupt_exist_connections": false
-    },
-    {
-      "type": "selector",
-      "tag": "手动切换",
-      "outbounds": [
-	    "hongkong-VLESS_Reality_Vision",
-        "bd2a6223-VLESS_Reality_Vision",
-        "bd2a6223-VLESS_Reality_gPRC",
-		"bd2a6223-VLESS_TCP/TLS_Vision"
-      ]
-    },
-    {
-      "type": "selector",
-      "tag": "Telegram",
-      "outbounds": [
-        "手动切换",
-        "自动选择",
-        "bd2a6223-VLESS_TCP/TLS_Vision",
-        "bd2a6223-VLESS_Reality_Vision",
-        "bd2a6223-VLESS_Reality_gPRC"
-      ]
-    },
-    {
-      "type": "selector",
-      "tag": "YouTube",
-      "outbounds": [
-        "手动切换",
-        "自动选择",
-        "bd2a6223-VLESS_TCP/TLS_Vision",
-        "bd2a6223-VLESS_Reality_Vision",
-        "bd2a6223-VLESS_Reality_gPRC"
-      ]
-    },
-    {
-      "type": "selector",
-      "tag": "netflix",
-      "outbounds": [
-        "手动切换",
-        "自动选择",
-        "bd2a6223-VLESS_TCP/TLS_Vision",
-        "bd2a6223-VLESS_Reality_Vision",
-        "bd2a6223-VLESS_Reality_gPRC"
-      ]
-    },
-    {
-      "type": "selector",
-      "tag": "OpenAI",
-      "outbounds": [
-        "手动切换",
-        "自动选择",
-        "bd2a6223-VLESS_TCP/TLS_Vision",
-        "bd2a6223-VLESS_Reality_Vision",
-        "bd2a6223-VLESS_Reality_gPRC"
-      ]
-    },
-    {
-      "type": "selector",
-      "tag": "Apple",
-      "outbounds": [
-        "手动切换",
-        "自动选择",
-        "direct",
-        "bd2a6223-VLESS_TCP/TLS_Vision",
-        "bd2a6223-VLESS_Reality_Vision",
-        "bd2a6223-VLESS_Reality_gPRC"
-      ]
-    },
-    {
-      "type": "selector",
-      "tag": "Google",
-      "outbounds": [
-        "手动切换",
-        "自动选择",
-        "bd2a6223-VLESS_TCP/TLS_Vision",
-        "bd2a6223-VLESS_Reality_Vision",
-        "bd2a6223-VLESS_Reality_gPRC"
-      ]
-    },
-    {
-      "type": "selector",
-      "tag": "Microsoft",
-      "outbounds": [
-        "手动切换",
-        "自动选择",
-        "direct",
-        "bd2a6223-VLESS_TCP/TLS_Vision",
-        "bd2a6223-VLESS_Reality_Vision",
-        "bd2a6223-VLESS_Reality_gPRC"
-      ]
-    },
-    {
-      "type": "selector",
-      "tag": "Github",
-      "outbounds": [
-        "手动切换",
-        "自动选择",
-        "direct",
-        "bd2a6223-VLESS_TCP/TLS_Vision",
-        "bd2a6223-VLESS_Reality_Vision",
-        "bd2a6223-VLESS_Reality_gPRC"
-      ]
-    },
-    {
-      "type": "selector",
-      "tag": "本地直连",
-      "outbounds": [
-        "direct",
-        "手动切换",
-        "自动选择",
-        "bd2a6223-VLESS_TCP/TLS_Vision",
-        "bd2a6223-VLESS_Reality_Vision",
-        "bd2a6223-VLESS_Reality_gPRC"
-      ],
-      "default": "direct"
-    },
-    {
-      "tag": "direct",
-      "type": "direct"
-    },
-    {
-      "tag": "bd2a6223-VLESS_TCP/TLS_Vision",
-      "type": "vless",
-      "server": "bag.annieyu.com",
-      "server_port": 34198,
-      "uuid": "bd2a6223-3507-41d2-92ed-e8c174035cbd",
-      "flow": "xtls-rprx-vision",
+      "type": "hysteria2",
+      "tag": "🇺🇸 rack hysteria2",
+      "server": "23.94.168.93",
+      "server_port": 8881,
+      "up_mbps": 200,
+      "down_mbps": 1000,
+      "password": "cf3028b6-7db6-4373-b87f-e63294a0181d",
       "tls": {
         "enabled": true,
-        "server_name": "bag.annieyu.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        }
-      },
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "bd2a6223-VLESS_Reality_Vision",
-      "type": "vless",
-      "server": "93.179.98.227",
-      "server_port": 21601,
-      "uuid": "bd2a6223-3507-41d2-92ed-e8c174035cbd",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "server_name": "itunes.apple.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "kuzNYVxP--fFsPKrM_2VmYC-t4L3Hx0hDcZze0wI-WA",
-          "short_id": "6ba85179e30d4fc2"
-        }
-      },
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "bd2a6223-VLESS_Reality_gPRC",
-      "type": "vless",
-      "server": "93.179.98.227",
-      "server_port": 42033,
-      "uuid": "bd2a6223-3507-41d2-92ed-e8c174035cbd",
-      "tls": {
-        "enabled": true,
-        "server_name": "aod.itunes.apple.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "kuzNYVxP--fFsPKrM_2VmYC-t4L3Hx0hDcZze0wI-WA",
-          "short_id": "6ba85179e30d4fc2"
-        }
-      },
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "grpc",
-        "service_name": "grpc"
+        "server_name": "addons.mozilla.org",
+        "certificate_public_key_sha256": [
+          "VmpjMmA1ri4ynSNn+hrxui+SgdCTixZnMFZSCRnuleg="
+        ],
+        "alpn": ["h3"]
       }
     },
-	{
-      "tag": "hongkong-VLESS_Reality_Vision",
+    {
+      "type": "vless",
+      "tag": "🇺🇸 rack vless-ws-tls",
+      "server": "skk.moe",
+      "server_port": 443,
+      "uuid": "cf3028b6-7db6-4373-b87f-e63294a0181d",
+      "tls": {
+        "enabled": true,
+        "server_name": "sbb.annieyu.com",
+        "insecure": false,
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/cf3028b6-7db6-4373-b87f-e63294a0181d-vless",
+        "headers": {
+          "Host": "sbb.annieyu.com"
+        },
+        "max_early_data": 2560,
+        "early_data_header_name": "Sec-WebSocket-Protocol"
+      },
+      "multiplex": {
+        "enabled": true,
+        "protocol": "h2mux",
+        "max_streams": 16,
+        "padding": true,
+        "brutal": {
+          "enabled": false,
+          "up_mbps": 1000,
+          "down_mbps": 1000
+        }
+      }
+    },
+    {
+      "tag": "🇭🇰 Grady xtls-reality",
       "type": "vless",
       "server": "admin.annieyu.com",
       "server_port": 10808,
@@ -290,264 +129,444 @@
         }
       },
       "packet_encoding": "xudp"
+    },
+    {
+      "type": "vless",
+      "tag": "🇺🇸 vultr xtls-reality",
+      "server": "144.202.124.19",
+      "server_port": 8881,
+      "uuid": "c83f1d48-ac31-40f9-a00c-5016321a0b4a",
+      "flow": "xtls-rprx-vision",
+      "tls": {
+        "enabled": true,
+        "server_name": "addons.mozilla.org",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        },
+        "reality": {
+          "enabled": true,
+          "public_key": "2py-VKWemQbX3YxPrHnbBTsIKAax-_3Xlxr0MbOH1XE",
+          "short_id": ""
+        }
+      },
+      "multiplex": {
+        "enabled": false,
+        "protocol": "h2mux",
+        "max_connections": 8,
+        "min_streams": 16,
+        "padding": false,
+        "brutal": {
+          "enabled": false,
+          "up_mbps": 1000,
+          "down_mbps": 1000
+        }
+      }
+    },
+    {
+      "type": "vless",
+      "tag": "🇺🇸 vultr vless-ws-tls",
+      "server": "skk.moe",
+      "server_port": 443,
+      "uuid": "c83f1d48-ac31-40f9-a00c-5016321a0b4a",
+      "tls": {
+        "enabled": true,
+        "server_name": "magnificent-necessity-membrane-fat.trycloudflare.com",
+        "insecure": false,
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/c83f1d48-ac31-40f9-a00c-5016321a0b4a-vless",
+        "headers": {
+          "Host": "magnificent-necessity-membrane-fat.trycloudflare.com"
+        },
+        "max_early_data": 2560,
+        "early_data_header_name": "Sec-WebSocket-Protocol"
+      },
+      "multiplex": {
+        "enabled": true,
+        "protocol": "h2mux",
+        "max_streams": 16,
+        "padding": true,
+        "brutal": {
+          "enabled": false,
+          "up_mbps": 1000,
+          "down_mbps": 1000
+        }
+      }
+    },
+    {
+      "type": "vless",
+      "tag": "🇺🇸 vultr grpc-reality",
+      "server": "144.202.124.19",
+      "server_port": 8883,
+      "uuid": "c83f1d48-ac31-40f9-a00c-5016321a0b4a",
+      "tls": {
+        "enabled": true,
+        "server_name": "addons.mozilla.org",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        },
+        "reality": {
+          "enabled": true,
+          "public_key": "2py-VKWemQbX3YxPrHnbBTsIKAax-_3Xlxr0MbOH1XE",
+          "short_id": ""
+        }
+      },
+      "transport": {
+        "type": "grpc",
+        "service_name": "grpc"
+      }
+    },
+    {
+      "type": "vless",
+      "tag": "🇺🇸 Grady xtls-reality",
+      "server": "93.179.98.227",
+      "server_port": 8881,
+      "uuid": "254ea7a0-2c8b-44d4-8730-7d5485357448",
+      "flow": "xtls-rprx-vision",
+      "tls": {
+        "enabled": true,
+        "server_name": "addons.mozilla.org",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        },
+        "reality": {
+          "enabled": true,
+          "public_key": "5qbGLJ_FklseLE70BNTPnvtrfBjEDt0Z62w5vBtFwwc",
+          "short_id": ""
+        }
+      },
+      "multiplex": {
+        "enabled": false,
+        "protocol": "h2mux",
+        "max_connections": 8,
+        "min_streams": 16,
+        "padding": false,
+        "brutal": {
+          "enabled": false,
+          "up_mbps": 1000,
+          "down_mbps": 1000
+        }
+      }
+    },
+    {
+      "type": "vless",
+      "tag": "🇺🇸 Grady vless-ws-tls",
+      "server": "bestcf.top",
+      "server_port": 443,
+      "uuid": "254ea7a0-2c8b-44d4-8730-7d5485357448",
+      "tls": {
+        "enabled": true,
+        "server_name": "sba.annieyu.com",
+        "insecure": false,
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/254ea7a0-2c8b-44d4-8730-7d5485357448-vless",
+        "headers": {
+          "Host": "sba.annieyu.com"
+        },
+        "max_early_data": 2560,
+        "early_data_header_name": "Sec-WebSocket-Protocol"
+      },
+      "multiplex": {
+        "enabled": true,
+        "protocol": "h2mux",
+        "max_streams": 16,
+        "padding": true,
+        "brutal": {
+          "enabled": false,
+          "up_mbps": 1000,
+          "down_mbps": 1000
+        }
+      }
+    },
+    {
+      "type": "vless",
+      "tag": "🇺🇸 Grady grpc-reality",
+      "server": "93.179.98.227",
+      "server_port": 8883,
+      "uuid": "254ea7a0-2c8b-44d4-8730-7d5485357448",
+      "tls": {
+        "enabled": true,
+        "server_name": "addons.mozilla.org",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        },
+        "reality": {
+          "enabled": true,
+          "public_key": "5qbGLJ_FklseLE70BNTPnvtrfBjEDt0Z62w5vBtFwwc",
+          "short_id": ""
+        }
+      },
+      "transport": {
+        "type": "grpc",
+        "service_name": "grpc"
+      }
+    },
+    {
+      "type": "selector",
+      "tag": "🚀 节点选择",
+      "outbounds": [
+        "♻️ 自动选择",
+        "🎯 direct",
+        "🇺🇸 rack hysteria2",
+        "🇺🇸 rack vless-ws-tls",
+        "🇭🇰 Grady xtls-reality",
+        "🇺🇸 vultr xtls-reality",
+        "🇺🇸 vultr vless-ws-tls",
+        "🇺🇸 vultr grpc-reality",
+        "🇺🇸 Grady xtls-reality",
+        "🇺🇸 Grady vless-ws-tls",
+        "🇺🇸 Grady grpc-reality"
+      ]
+    },
+    {
+      "type": "urltest",
+      "tag": "♻️ 自动选择",
+      "outbounds": [
+        "🇺🇸 rack hysteria2",
+        "🇺🇸 rack vless-ws-tls",
+        "🇭🇰 Grady xtls-reality",
+        "🇺🇸 vultr xtls-reality",
+        "🇺🇸 vultr vless-ws-tls",
+        "🇺🇸 vultr grpc-reality",
+        "🇺🇸 Grady xtls-reality",
+        "🇺🇸 Grady vless-ws-tls",
+        "🇺🇸 Grady grpc-reality"
+      ],
+      "url": "http://www.gstatic.com/generate_204",
+      "interval": "5m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "selector",
+      "tag": "🤖 AI",
+      "outbounds": [
+        "♻️ 自动选择",
+        "✈️ Proxy",
+        "🇺🇸 rack hysteria2",
+        "🇺🇸 rack vless-ws-tls",
+        "🇺🇸 vultr xtls-reality",
+        "🇺🇸 vultr vless-ws-tls",
+        "🇺🇸 vultr grpc-reality",
+        "🇺🇸 Grady xtls-reality",
+        "🇺🇸 Grady vless-ws-tls",
+        "🇺🇸 Grady grpc-reality"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "▶️ YouTube",
+      "outbounds": [
+        "♻️ 自动选择",
+        "✈️ Proxy",
+        "🇺🇸 rack hysteria2",
+        "🇺🇸 rack vless-ws-tls",
+        "🇺🇸 vultr xtls-reality",
+        "🇺🇸 vultr vless-ws-tls",
+        "🇺🇸 vultr grpc-reality",
+        "🇺🇸 Grady xtls-reality",
+        "🇺🇸 Grady vless-ws-tls",
+        "🇺🇸 Grady grpc-reality"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "📱 Telegram",
+      "outbounds": [
+        "♻️ 自动选择",
+        "✈️ Proxy",
+        "🇺🇸 rack hysteria2",
+        "🇺🇸 rack vless-ws-tls",
+        "🇺🇸 vultr xtls-reality",
+        "🇺🇸 vultr vless-ws-tls",
+        "🇺🇸 vultr grpc-reality",
+        "🇺🇸 Grady xtls-reality",
+        "🇺🇸 Grady vless-ws-tls",
+        "🇺🇸 Grady grpc-reality"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "✈️ Proxy",
+      "outbounds": [
+        "♻️ 自动选择",
+        "🎯 direct",
+        "🇺🇸 rack hysteria2",
+        "🇺🇸 rack vless-ws-tls",
+        "🇺🇸 vultr xtls-reality",
+        "🇺🇸 vultr vless-ws-tls",
+        "🇺🇸 vultr grpc-reality",
+        "🇺🇸 Grady xtls-reality",
+        "🇺🇸 Grady vless-ws-tls",
+        "🇺🇸 Grady grpc-reality"
+      ]
+    },
+    {
+      "type": "direct",
+      "tag": "🎯 direct"
+    },
+    {
+      "type": "block",
+      "tag": "block"
     }
   ],
   "route": {
-    "default_domain_resolver": {
-      "server": "dns_resolver",
-      "strategy": "prefer_ipv4"
-    },
-    "rule_set": [
-      {
-        "tag": "geosite-category-ads-all",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/category-ads-all.srs",
-        "update_interval": "1d"
-      },
-      {
-        "tag": "geosite-telegram",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/telegram.srs",
-        "update_interval": "1d"
-      },
-      {
-        "tag": "geoip-telegram",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geoip/telegram.srs",
-        "update_interval": "1d"
-      },
-      {
-        "tag": "geosite-youtube",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/youtube.srs",
-        "update_interval": "1d"
-      },
-      {
-        "tag": "geosite-netflix",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/netflix.srs",
-        "update_interval": "1d"
-      },
-      {
-        "tag": "geoip-netflix",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geoip/netflix.srs",
-        "update_interval": "1d"
-      },
-      {
-        "tag": "geosite-openai@ads",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/openai@ads.srs",
-        "update_interval": "1d"
-      },
-      {
-        "tag": "geosite-openai",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/openai.srs",
-        "update_interval": "1d"
-      },
-      {
-        "tag": "geosite-apple",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/apple.srs",
-        "update_interval": "1d"
-      },
-      {
-        "tag": "geosite-google",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/google.srs",
-        "update_interval": "1d"
-      },
-      {
-        "tag": "geoip-google",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geoip/google.srs",
-        "update_interval": "1d"
-      },
-      {
-        "tag": "geosite-microsoft",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/microsoft.srs",
-        "update_interval": "1d"
-      },
-      {
-        "tag": "geosite-geolocation-!cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/geolocation-!cn.srs",
-        "update_interval": "1d"
-      },
-      {
-        "tag": "geosite-github",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/github.srs",
-        "update_interval": "1d"
-      },
-      {
-        "tag": "geosite-private",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/private.srs",
-        "update_interval": "1d"
-      },
-      {
-        "tag": "geosite-cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/cn.srs",
-        "update_interval": "1d"
-      },
-      {
-        "tag": "geoip-private",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geoip/private.srs",
-        "update_interval": "1d"
-      },
-      {
-        "tag": "geoip-cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geoip/cn.srs",
-        "update_interval": "1d"
-      }
-    ],
     "rules": [
       {
         "action": "sniff"
+      },
+      {
+        "clash_mode": "Direct",
+        "outbound": "🎯 direct"
+      },
+      {
+        "clash_mode": "Global",
+        "outbound": "✈️ Proxy"
       },
       {
         "protocol": "dns",
         "action": "hijack-dns"
       },
       {
+        "rule_set": "geosite-category-ads-all",
+        "action": "reject"
+      },
+      {
+        "rule_set": ["geosite-cn", "geoip-cn"],
+        "outbound": "🎯 direct"
+      },
+      {
         "ip_is_private": true,
-        "outbound": "direct"
+        "outbound": "🎯 direct"
       },
       {
-        "clash_mode": "global",
-        "outbound": "手动切换"
-      },
-      {
-        "clash_mode": "direct",
-        "outbound": "本地直连"
+        "domain_suffix": [
+          ".home.com",
+          ".grady.com",
+          ".annieyu.com",
+          ".frutech.com.cn"
+        ],
+        "outbound": "🎯 direct"
       },
       {
         "type": "logical",
         "mode": "or",
         "rules": [
           {
-            "rule_set": "geosite-category-ads-all"
-          },
-          {
-            "domain_regex": "^stun\\..+"
-          },
-          {
-            "domain_keyword": [
-              "stun",
-              "httpdns"
+            "rule_set": [
+              "geosite-openai",
+              "geosite-anthropic",
+              "geosite-google-gemini"
             ]
           },
           {
-            "protocol": "stun"
+            "domain_suffix": [
+              "chatgpt.com",
+              "claude.ai",
+              "gateway.ai.cloudflare.com",
+              "grok.com",
+              "groq.com",
+              "meta.ai",
+              "openart.ai",
+              "openrouter.ai",
+              "perplexity.ai",
+              "x.ai"
+            ]
           }
         ],
-        "action": "reject",
-        "method": "default",
-        "no_drop": false
+        "outbound": "🤖 AI"
       },
       {
-        "rule_set": [
-          "geosite-telegram",
-          "geoip-telegram"
-        ],
-        "outbound": "Telegram"
+        "rule_set": ["geosite-youtube", "geosite-netflix"],
+        "outbound": "▶️ YouTube"
       },
       {
-        "rule_set": "geosite-youtube",
-        "outbound": "YouTube"
-      },
-      {
-        "rule_set": [
-          "geosite-netflix",
-          "geoip-netflix"
-        ],
-        "outbound": "netflix"
-      },
-      {
-        "rule_set": "geosite-openai@ads",
-        "action": "reject",
-        "method": "default",
-        "no_drop": false
-      },
-      {
-        "rule_set": "geosite-openai",
-        "outbound": "OpenAI"
-      },
-      {
-        "rule_set": "geosite-apple",
-        "outbound": "Apple"
-      },
-      {
-        "rule_set": [
-          "geosite-google",
-          "geoip-google"
-        ],
-        "outbound": "Google"
-      },
-      {
-        "rule_set": "geosite-microsoft",
-        "outbound": "Microsoft"
-      },
-      {
-        "rule_set": "geosite-github",
-        "outbound": "Github"
+        "rule_set": "geosite-telegram",
+        "outbound": "📱 Telegram"
       },
       {
         "rule_set": "geosite-geolocation-!cn",
-        "outbound": "手动切换"
-      },
-	  {
-        "outbound": "本地直连",
-        "domain": [
-          "frutech.com",
-          "frutech.com.cn",
-          "grady.com",
-          "home.com",
-          "annieyu.com"
-        ],
-        "domain_suffix": [
-          ".frutech.com",
-          ".frutech.com.cn",
-          ".grady.com",
-          ".home.com",
-          ".annieyu.com"
-        ]
-      },
-      {
-        "rule_set": [
-          "geosite-private",
-          "geosite-cn",
-          "geoip-private",
-          "geoip-cn"
-        ],
-        "outbound": "本地直连"
+        "outbound": "♻️ 自动选择"
       }
     ],
-    "final": "本地直连",
-    "auto_detect_interface": true
+    "rule_set": [
+      {
+        "type": "remote",
+        "tag": "geosite-category-ads-all",
+        "url": "https://testingcf.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+        "update_interval": "24h0m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-cn",
+        "url": "https://testingcf.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+        "update_interval": "24h0m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geoip-cn",
+        "url": "https://testingcf.jsdelivr.net/gh/SagerNet/sing-geoip@rule-set/geoip-cn.srs",
+        "update_interval": "24h0m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-openai",
+        "url": "https://testingcf.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-openai.srs",
+        "update_interval": "24h0m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-anthropic",
+        "url": "https://testingcf.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-anthropic.srs",
+        "update_interval": "24h0m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-google-gemini",
+        "url": "https://testingcf.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-google-gemini.srs",
+        "update_interval": "24h0m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-youtube",
+        "url": "https://testingcf.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-youtube.srs",
+        "update_interval": "24h0m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-netflix",
+        "url": "https://testingcf.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-netflix.srs",
+        "update_interval": "24h0m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-telegram",
+        "url": "https://testingcf.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-telegram.srs",
+        "update_interval": "24h0m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-geolocation-!cn",
+        "url": "https://testingcf.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-geolocation-!cn.srs",
+        "update_interval": "24h0m0s"
+      }
+    ],
+    "final": "🚀 节点选择",
+    "auto_detect_interface": true,
+    "default_domain_resolver": "local"
   }
 }
