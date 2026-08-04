@@ -1,0 +1,28 @@
+services:
+  derper:
+    image: fredliang/derper
+    container_name: derper
+    restart: always
+    volumes:
+      - /var/run/tailscale/:/var/run/tailscale/
+    networks:
+      - traefik
+    ports:
+      - "3478:3478/udp"
+    environment:
+      DERP_ADDR: :3443
+      DERP_DOMAIN: admin.frutech.com.cn
+      DERP_VERIFY_CLIENTS: true
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: "traefik"
+      # Headscale Admin Service Configuration
+      traefik.http.services.derper.loadbalancer.server.port: 3443
+      traefik.http.services.derper.loadbalancer.server.scheme: http
+      traefik.http.routers.derper.rule: Host(`derper.frutech.com.cn`)
+      traefik.http.routers.derper.entrypoints: websecure
+      traefik.http.routers.derper.tls.certresolver: alidns
+
+networks:
+  traefik:
+    external: true

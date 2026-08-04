@@ -1,8 +1,0 @@
-services:
-  derp:
-    image: javaow/tailscale-derp
-    restart: always
-    container_name: derp
-    network_mode: host
-    environment:
-      TZ: Asia/Shanghai

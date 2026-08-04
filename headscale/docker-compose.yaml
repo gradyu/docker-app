@@ -1,6 +1,6 @@
 services:
   headscale:
-    image: docker.io/headscale/headscale:0.28
+    image: docker.io/headscale/headscale:0.29.2
     restart: unless-stopped
     container_name: headscale
     read_only: true
@@ -11,12 +11,13 @@ services:
     networks:
       - traefik
     volumes:
-      - ./config:/etc/headscale:ro
-      - ./lib:/var/lib/headscale
+      - ./config/headscale:/etc/headscale:ro
+      - ./lib/headscale:/var/lib/headscale
     command: serve
     healthcheck:
       test: ["CMD", "headscale", "health"]
     labels:
+      #me.tale.headplane.target: headscale
       traefik.enable: "true"
       traefik.docker.network: "traefik"
       # Headscale Service Configuration
@@ -27,15 +28,14 @@ services:
       traefik.http.routers.headscale.tls.certresolver: cloudflare
       traefik.http.routers.headscale.service: headscale
       # CORS Middleware Configuration
-      #traefik.http.middlewares.headscale-cors.headers.accessControlAllowMethods: "GET,POST,PUT,PATCH,DELETE,OPTIONS"
-      #traefik.http.middlewares.headscale-cors.headers.accessControlAllowHeaders: "Authorization,Content-Type"
-      #traefik.http.middlewares.headscale-cors.headers.accessControlAllowOriginList: "https://hs.annieyu.com"
-      #traefik.http.middlewares.headscale-cors.headers.accessControlMaxAge: 100
-      #traefik.http.middlewares.headscale-cors.headers.addVaryHeader: true
-      # Attach Middleware to Router
-      #traefik.http.routers.headscale.middlewares: headscale-cors
+      traefik.http.routers.headscale.middlewares: cors
+      traefik.http.middlewares.cors.headers.accesscontrolallowheaders: "*"
+      traefik.http.middlewares.cors.headers.accesscontrolallowmethods: GET,POST,PUT
+      traefik.http.middlewares.cors.headers.accesscontrolalloworiginlist: https://hs.annieyu.com
+      traefik.http.middlewares.cors.headers.accesscontrolmaxage: 100
+      traefik.http.middlewares.cors.headers.addvaryheader: true
 
-  headscale-admin:
+  headscale-ui:
     image: ghcr.io/gurucomputing/headscale-ui:latest
     container_name: headscale-ui
     restart: unless-stopped
@@ -51,6 +51,25 @@ services:
       traefik.http.routers.headscale-ui.entrypoints: websecure
       traefik.http.routers.headscale-ui.tls.certresolver: cloudflare
 
+  # headplane:
+  #   image: ghcr.io/tale/headplane
+  #   container_name: headplane
+  #   restart: unless-stopped
+  #   networks:
+  #     - traefik
+  #   volumes:
+  #     - "./config/headplane/config.yaml:/etc/headplane/config.yaml"
+  #     - "./lib/headplane:/var/lib/headplane"
+  #     - "./config/headscale/config.yaml:/etc/headscale/config.yaml"
+  #     #- "/path/to/headscale/dns_records.json:/etc/headscale/dns_records.json"
+  #     - "/var/run/docker.sock:/var/run/docker.sock:ro"
+  #   labels:
+  #     # Expose the admin UI at /admin
+  #     - "traefik.enable=true"
+  #     - "traefik.docker.network=traefik"
+  #     - "traefik.http.routers.headplane.rule=Host(`hs.annieyu.com`) && PathPrefix(`/admin`)"
+  #     - "traefik.http.routers.headplane.entrypoints=websecure"
+  #     - "traefik.http.routers.headplane.tls.certresolver=cloudflare"
 
 networks:
   traefik:
