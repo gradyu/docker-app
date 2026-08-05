@@ -8,6 +8,11 @@
       "enabled": true,
       "store_fakeip": true,
       "store_rdrc": true
+    },
+    "clash_api": {
+      "external_controller": "127.0.0.1:9090",
+      "external_ui": "ui",
+      "default_mode": "rule"
     }
   },
   "dns": {
@@ -116,6 +121,27 @@
       }
     },
     {
+      "type": "anytls",
+      "tag": "🇺🇸 rack anytls",
+      "server": "23.94.168.93",
+      "server_port": 8883,
+      "password": "cf3028b6-7db6-4373-b87f-e63294a0181d",
+      "idle_session_check_interval": "30s",
+      "idle_session_timeout": "30s",
+      "min_idle_session": 5,
+      "tls": {
+        "enabled": true,
+        "certificate_public_key_sha256": [
+          "VmpjMmA1ri4ynSNn+hrxui+SgdCTixZnMFZSCRnuleg="
+        ],
+        "server_name": "addons.mozilla.org",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      }
+    },
+    {
       "tag": "🇭🇰 Grady xtls-reality",
       "type": "vless",
       "server": "admin.annieyu.com",
@@ -136,99 +162,6 @@
         }
       },
       "packet_encoding": "xudp"
-    },
-    {
-      "type": "vless",
-      "tag": "🇺🇸 vultr xtls-reality",
-      "server": "144.202.124.19",
-      "server_port": 8881,
-      "uuid": "c83f1d48-ac31-40f9-a00c-5016321a0b4a",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "server_name": "addons.mozilla.org",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "2py-VKWemQbX3YxPrHnbBTsIKAax-_3Xlxr0MbOH1XE",
-          "short_id": ""
-        }
-      },
-      "multiplex": {
-        "enabled": false,
-        "protocol": "h2mux",
-        "max_connections": 8,
-        "min_streams": 16,
-        "padding": false,
-        "brutal": {
-          "enabled": false,
-          "up_mbps": 1000,
-          "down_mbps": 1000
-        }
-      }
-    },
-    {
-      "type": "vless",
-      "tag": "🇺🇸 vultr vless-ws-tls",
-      "server": "skk.moe",
-      "server_port": 443,
-      "uuid": "c83f1d48-ac31-40f9-a00c-5016321a0b4a",
-      "tls": {
-        "enabled": true,
-        "server_name": "magnificent-necessity-membrane-fat.trycloudflare.com",
-        "insecure": false,
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        }
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/c83f1d48-ac31-40f9-a00c-5016321a0b4a-vless",
-        "headers": {
-          "Host": "magnificent-necessity-membrane-fat.trycloudflare.com"
-        },
-        "max_early_data": 2560,
-        "early_data_header_name": "Sec-WebSocket-Protocol"
-      },
-      "multiplex": {
-        "enabled": true,
-        "protocol": "h2mux",
-        "max_streams": 16,
-        "padding": true,
-        "brutal": {
-          "enabled": false,
-          "up_mbps": 1000,
-          "down_mbps": 1000
-        }
-      }
-    },
-    {
-      "type": "vless",
-      "tag": "🇺🇸 vultr grpc-reality",
-      "server": "144.202.124.19",
-      "server_port": 8883,
-      "uuid": "c83f1d48-ac31-40f9-a00c-5016321a0b4a",
-      "tls": {
-        "enabled": true,
-        "server_name": "addons.mozilla.org",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "2py-VKWemQbX3YxPrHnbBTsIKAax-_3Xlxr0MbOH1XE",
-          "short_id": ""
-        }
-      },
-      "transport": {
-        "type": "grpc",
-        "service_name": "grpc"
-      }
     },
     {
       "type": "vless",
@@ -324,6 +257,42 @@
       }
     },
     {
+      "type": "shadowsocks",
+      "tag": "🇺🇸 Grady ShadowTLS",
+      "method": "2022-blake3-aes-128-gcm",
+      "password": "TwOhSEKYpGfx1HMic6fYNw==",
+      "detour": "shadowtls-out",
+      "udp_over_tcp": false,
+      "multiplex": {
+        "enabled": true,
+        "protocol": "h2mux",
+        "max_connections": 8,
+        "min_streams": 16,
+        "padding": true,
+        "brutal": {
+          "enabled": false,
+          "up_mbps": 1000,
+          "down_mbps": 1000
+        }
+      }
+    },
+    {
+      "type": "shadowtls",
+      "tag": "shadowtls-out",
+      "server": "93.179.98.227",
+      "server_port": 8884,
+      "version": 3,
+      "password": "254ea7a0-2c8b-44d4-8730-7d5485357448",
+      "tls": {
+        "enabled": true,
+        "server_name": "addons.mozilla.org",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      }
+    },
+    {
       "type": "selector",
       "tag": "🚀 节点选择",
       "outbounds": [
@@ -331,13 +300,12 @@
         "🎯 direct",
         "🇺🇸 rack hysteria2",
         "🇺🇸 rack vless-ws-tls",
+        "🇺🇸 rack anytls",
         "🇭🇰 Grady xtls-reality",
-        "🇺🇸 vultr xtls-reality",
-        "🇺🇸 vultr vless-ws-tls",
-        "🇺🇸 vultr grpc-reality",
         "🇺🇸 Grady xtls-reality",
         "🇺🇸 Grady vless-ws-tls",
-        "🇺🇸 Grady grpc-reality"
+        "🇺🇸 Grady grpc-reality",
+        "🇺🇸 Grady ShadowTLS"
       ]
     },
     {
@@ -346,13 +314,12 @@
       "outbounds": [
         "🇺🇸 rack hysteria2",
         "🇺🇸 rack vless-ws-tls",
+        "🇺🇸 rack anytls",
         "🇭🇰 Grady xtls-reality",
-        "🇺🇸 vultr xtls-reality",
-        "🇺🇸 vultr vless-ws-tls",
-        "🇺🇸 vultr grpc-reality",
         "🇺🇸 Grady xtls-reality",
         "🇺🇸 Grady vless-ws-tls",
-        "🇺🇸 Grady grpc-reality"
+        "🇺🇸 Grady grpc-reality",
+        "🇺🇸 Grady ShadowTLS"
       ],
       "url": "http://www.gstatic.com/generate_204",
       "interval": "5m0s",
@@ -366,12 +333,11 @@
         "✈️ Proxy",
         "🇺🇸 rack hysteria2",
         "🇺🇸 rack vless-ws-tls",
-        "🇺🇸 vultr xtls-reality",
-        "🇺🇸 vultr vless-ws-tls",
-        "🇺🇸 vultr grpc-reality",
+        "🇺🇸 rack anytls",
         "🇺🇸 Grady xtls-reality",
         "🇺🇸 Grady vless-ws-tls",
-        "🇺🇸 Grady grpc-reality"
+        "🇺🇸 Grady grpc-reality",
+        "🇺🇸 Grady ShadowTLS"
       ]
     },
     {
@@ -382,12 +348,11 @@
         "✈️ Proxy",
         "🇺🇸 rack hysteria2",
         "🇺🇸 rack vless-ws-tls",
-        "🇺🇸 vultr xtls-reality",
-        "🇺🇸 vultr vless-ws-tls",
-        "🇺🇸 vultr grpc-reality",
+        "🇺🇸 rack anytls",
         "🇺🇸 Grady xtls-reality",
         "🇺🇸 Grady vless-ws-tls",
-        "🇺🇸 Grady grpc-reality"
+        "🇺🇸 Grady grpc-reality",
+        "🇺🇸 Grady ShadowTLS"
       ]
     },
     {
@@ -398,12 +363,11 @@
         "✈️ Proxy",
         "🇺🇸 rack hysteria2",
         "🇺🇸 rack vless-ws-tls",
-        "🇺🇸 vultr xtls-reality",
-        "🇺🇸 vultr vless-ws-tls",
-        "🇺🇸 vultr grpc-reality",
+        "🇺🇸 rack anytls",
         "🇺🇸 Grady xtls-reality",
         "🇺🇸 Grady vless-ws-tls",
-        "🇺🇸 Grady grpc-reality"
+        "🇺🇸 Grady grpc-reality",
+        "🇺🇸 Grady ShadowTLS"
       ]
     },
     {
@@ -414,12 +378,11 @@
         "🎯 direct",
         "🇺🇸 rack hysteria2",
         "🇺🇸 rack vless-ws-tls",
-        "🇺🇸 vultr xtls-reality",
-        "🇺🇸 vultr vless-ws-tls",
-        "🇺🇸 vultr grpc-reality",
+        "🇺🇸 rack anytls",
         "🇺🇸 Grady xtls-reality",
         "🇺🇸 Grady vless-ws-tls",
-        "🇺🇸 Grady grpc-reality"
+        "🇺🇸 Grady grpc-reality",
+        "🇺🇸 Grady ShadowTLS"
       ]
     },
     {
@@ -465,6 +428,7 @@
           ".home.com",
           ".grady.com",
           ".annieyu.com",
+          ".yhwei.cc.cd",
           ".frutech.com.cn"
         ],
         "outbound": "🎯 direct"
