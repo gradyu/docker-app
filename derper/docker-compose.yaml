@@ -1,4 +1,25 @@
 services:
+  tailscaled:
+    image: tailscale/tailscale
+    container_name: tailscaled
+    restart: always
+    volumes:
+      - /var/lib:/var/lib
+      - /var/run/tailscale/:/var/run/tailscale/
+    environment:
+      TS_HOSTNAME: frt
+      TS_AUTH_ONCE: true
+      TS_STATE_DIR: /var/lib/tailscale
+      TS_AUTHKEY: hskey-auth-3PiHo_ztYQSd-PQYKbLPH9BbjqzVpQr4W--bhWkGGRm3GBSRRkKibRkUPm47IGqWeePZ4Q9u-GsGo
+      TS_SOCKET: /var/run/tailscale/tailscaled.sock
+      TS_EXTRA_ARGS: --login-server=https://hs.annieyu.com
+    networks:
+      - traefik
+    devices:
+      - /dev/net/tun
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
   derper:
     image: fredliang/derper
     container_name: derper
@@ -11,8 +32,10 @@ services:
       - "3478:3478/udp"
     environment:
       DERP_ADDR: :3443
-      DERP_DOMAIN: admin.frutech.com.cn
+      DERP_DOMAIN: derper.frutech.com.cn
       DERP_VERIFY_CLIENTS: true
+    depends_on:
+      - tailscaled
     labels:
       traefik.enable: "true"
       traefik.docker.network: "traefik"
