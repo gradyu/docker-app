@@ -72,6 +72,8 @@
       "tag": "🇺🇸 rack hysteria2",
       "server": "rack.annieyu.com",
       "server_port": 8881,
+      "server_ports": ["48500:48999"],
+      "hop_interval": "30s",
       "up_mbps": 200,
       "down_mbps": 1000,
       "password": "cf3028b6-7db6-4373-b87f-e63294a0181d",
