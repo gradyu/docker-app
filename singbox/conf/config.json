@@ -69,7 +69,7 @@
   "outbounds": [
     {
       "type": "hysteria2",
-      "tag": "🇺🇸 rack hysteria2",
+      "tag": "🇺🇸 NY hysteria2",
       "server": "rack.annieyu.com",
       "server_port": 8881,
       "server_ports": ["48500:48999"],
@@ -88,7 +88,7 @@
     },
     {
       "type": "vless",
-      "tag": "🇺🇸 rack vless-ws-tls",
+      "tag": "🇺🇸 NY vless-ws-tls",
       "server": "skk.moe",
       "server_port": 443,
       "uuid": "cf3028b6-7db6-4373-b87f-e63294a0181d",
@@ -124,7 +124,7 @@
     },
     {
       "type": "anytls",
-      "tag": "🇺🇸 rack anytls",
+      "tag": "🇺🇸 NY anytls",
       "server": "rack.annieyu.com",
       "server_port": 8883,
       "password": "cf3028b6-7db6-4373-b87f-e63294a0181d",
@@ -144,7 +144,7 @@
       }
     },
     {
-      "tag": "🇭🇰 Grady xtls-reality",
+      "tag": "🇭🇰 HK xtls-reality",
       "type": "vless",
       "server": "admin.annieyu.com",
       "server_port": 10808,
@@ -167,7 +167,7 @@
     },
     {
       "type": "vless",
-      "tag": "🇺🇸 Grady xtls-reality",
+      "tag": "🇺🇸 LA xtls-reality",
       "server": "bag.annieyu.com",
       "server_port": 8881,
       "uuid": "254ea7a0-2c8b-44d4-8730-7d5485357448",
@@ -200,7 +200,7 @@
     },
     {
       "type": "vless",
-      "tag": "🇺🇸 Grady vless-ws-tls",
+      "tag": "🇺🇸 LA vless-ws-tls",
       "server": "bestcf.top",
       "server_port": 443,
       "uuid": "254ea7a0-2c8b-44d4-8730-7d5485357448",
@@ -236,7 +236,7 @@
     },
     {
       "type": "vless",
-      "tag": "🇺🇸 Grady grpc-reality",
+      "tag": "🇺🇸 LA grpc-reality",
       "server": "bag.annieyu.com",
       "server_port": 8883,
       "uuid": "254ea7a0-2c8b-44d4-8730-7d5485357448",
@@ -260,7 +260,7 @@
     },
     {
       "type": "shadowsocks",
-      "tag": "🇺🇸 Grady ShadowTLS",
+      "tag": "🇺🇸 LA ShadowTLS",
       "method": "2022-blake3-aes-128-gcm",
       "password": "TwOhSEKYpGfx1HMic6fYNw==",
       "detour": "shadowtls-out",
@@ -300,28 +300,28 @@
       "outbounds": [
         "♻️ 自动选择",
         "🎯 direct",
-        "🇺🇸 rack hysteria2",
-        "🇺🇸 rack vless-ws-tls",
-        "🇺🇸 rack anytls",
-        "🇭🇰 Grady xtls-reality",
-        "🇺🇸 Grady xtls-reality",
-        "🇺🇸 Grady vless-ws-tls",
-        "🇺🇸 Grady grpc-reality",
-        "🇺🇸 Grady ShadowTLS"
+        "🇺🇸 NY hysteria2",
+        "🇺🇸 NY vless-ws-tls",
+        "🇺🇸 NY anytls",
+        "🇭🇰 HK xtls-reality",
+        "🇺🇸 LA xtls-reality",
+        "🇺🇸 LA vless-ws-tls",
+        "🇺🇸 LA grpc-reality",
+        "🇺🇸 LA ShadowTLS"
       ]
     },
     {
       "type": "urltest",
       "tag": "♻️ 自动选择",
       "outbounds": [
-        "🇺🇸 rack hysteria2",
-        "🇺🇸 rack vless-ws-tls",
-        "🇺🇸 rack anytls",
-        "🇭🇰 Grady xtls-reality",
-        "🇺🇸 Grady xtls-reality",
-        "🇺🇸 Grady vless-ws-tls",
-        "🇺🇸 Grady grpc-reality",
-        "🇺🇸 Grady ShadowTLS"
+        "🇺🇸 NY hysteria2",
+        "🇺🇸 NY vless-ws-tls",
+        "🇺🇸 NY anytls",
+        "🇭🇰 HK xtls-reality",
+        "🇺🇸 LA xtls-reality",
+        "🇺🇸 LA vless-ws-tls",
+        "🇺🇸 LA grpc-reality",
+        "🇺🇸 LA ShadowTLS"
       ],
       "url": "http://www.gstatic.com/generate_204",
       "interval": "5m0s",
@@ -333,13 +333,13 @@
       "outbounds": [
         "♻️ 自动选择",
         "✈️ Proxy",
-        "🇺🇸 rack hysteria2",
-        "🇺🇸 rack vless-ws-tls",
-        "🇺🇸 rack anytls",
-        "🇺🇸 Grady xtls-reality",
-        "🇺🇸 Grady vless-ws-tls",
-        "🇺🇸 Grady grpc-reality",
-        "🇺🇸 Grady ShadowTLS"
+        "🇺🇸 NY hysteria2",
+        "🇺🇸 NY vless-ws-tls",
+        "🇺🇸 NY anytls",
+        "🇺🇸 LA xtls-reality",
+        "🇺🇸 LA vless-ws-tls",
+        "🇺🇸 LA grpc-reality",
+        "🇺🇸 LA ShadowTLS"
       ]
     },
     {
@@ -348,13 +348,13 @@
       "outbounds": [
         "♻️ 自动选择",
         "✈️ Proxy",
-        "🇺🇸 rack hysteria2",
-        "🇺🇸 rack vless-ws-tls",
-        "🇺🇸 rack anytls",
-        "🇺🇸 Grady xtls-reality",
-        "🇺🇸 Grady vless-ws-tls",
-        "🇺🇸 Grady grpc-reality",
-        "🇺🇸 Grady ShadowTLS"
+        "🇺🇸 NY hysteria2",
+        "🇺🇸 NY vless-ws-tls",
+        "🇺🇸 NY anytls",
+        "🇺🇸 LA xtls-reality",
+        "🇺🇸 LA vless-ws-tls",
+        "🇺🇸 LA grpc-reality",
+        "🇺🇸 LA ShadowTLS"
       ]
     },
     {
@@ -363,13 +363,13 @@
       "outbounds": [
         "♻️ 自动选择",
         "✈️ Proxy",
-        "🇺🇸 rack hysteria2",
-        "🇺🇸 rack vless-ws-tls",
-        "🇺🇸 rack anytls",
-        "🇺🇸 Grady xtls-reality",
-        "🇺🇸 Grady vless-ws-tls",
-        "🇺🇸 Grady grpc-reality",
-        "🇺🇸 Grady ShadowTLS"
+        "🇺🇸 NY hysteria2",
+        "🇺🇸 NY vless-ws-tls",
+        "🇺🇸 NY anytls",
+        "🇺🇸 LA xtls-reality",
+        "🇺🇸 LA vless-ws-tls",
+        "🇺🇸 LA grpc-reality",
+        "🇺🇸 LA ShadowTLS"
       ]
     },
     {
@@ -378,13 +378,13 @@
       "outbounds": [
         "♻️ 自动选择",
         "🎯 direct",
-        "🇺🇸 rack hysteria2",
-        "🇺🇸 rack vless-ws-tls",
-        "🇺🇸 rack anytls",
-        "🇺🇸 Grady xtls-reality",
-        "🇺🇸 Grady vless-ws-tls",
-        "🇺🇸 Grady grpc-reality",
-        "🇺🇸 Grady ShadowTLS"
+        "🇺🇸 NY hysteria2",
+        "🇺🇸 NY vless-ws-tls",
+        "🇺🇸 NY anytls",
+        "🇺🇸 LA xtls-reality",
+        "🇺🇸 LA vless-ws-tls",
+        "🇺🇸 LA grpc-reality",
+        "🇺🇸 LA ShadowTLS"
       ]
     },
     {
