@@ -7,7 +7,7 @@
     "cache_file": {
       "enabled": true,
       "store_fakeip": true,
-      "store_rdrc": true
+      "store_dns": true
     },
     "clash_api": {
       "external_controller": "127.0.0.1:9090",
@@ -15,6 +15,17 @@
       "default_mode": "rule"
     }
   },
+  "ntp": {
+    "enabled": true,
+    "server": "time.apple.com",
+    "server_port": 123,
+    "interval": "60m"
+  },
+  "http_clients": [
+    {
+      "tag": "http-client-direct"
+    }
+  ],
   "dns": {
     "servers": [
       {
@@ -56,14 +67,13 @@
         "server": "fakeip"
       }
     ],
-    "strategy": "prefer_ipv4",
-    "independent_cache": true
+    "strategy": "prefer_ipv4"
   },
   "inbounds": [
     {
       "type": "mixed",
       "listen": "::",
-      "listen_port": 10808
+      "listen_port": 7890
     }
   ],
   "outbounds": [
@@ -259,6 +269,46 @@
       }
     },
     {
+      "type": "hysteria2",
+      "tag": "🇺🇸 LA hysteria2",
+      "server": "45.78.71.64",
+      "server_port": 8882,
+      "server_ports": ["51399:51800"],
+      "hop_interval": "30s",
+      "up_mbps": 200,
+      "down_mbps": 1000,
+      "password": "26e12f59-730c-4e0c-9bd4-d5e0fdc23813",
+      "tls": {
+        "enabled": true,
+        "server_name": "addons.mozilla.org",
+        "certificate_public_key_sha256": [
+          "cXk+Q9mu4nGh+kq2Er4SX43ZlVUfNBCaYRyrn8xwrPA="
+        ],
+        "alpn": ["h3"]
+      }
+    },
+    {
+      "type": "anytls",
+      "tag": "🇺🇸 LA anytls",
+      "server": "45.78.71.64",
+      "server_port": 8884,
+      "password": "26e12f59-730c-4e0c-9bd4-d5e0fdc23813",
+      "idle_session_check_interval": "30s",
+      "idle_session_timeout": "30s",
+      "min_idle_session": 5,
+      "tls": {
+        "enabled": true,
+        "certificate_public_key_sha256": [
+          "cXk+Q9mu4nGh+kq2Er4SX43ZlVUfNBCaYRyrn8xwrPA="
+        ],
+        "server_name": "addons.mozilla.org",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      }
+    },
+    {
       "type": "shadowsocks",
       "tag": "🇺🇸 LA ShadowTLS",
       "method": "2022-blake3-aes-128-gcm",
@@ -307,6 +357,8 @@
         "🇺🇸 LA xtls-reality",
         "🇺🇸 LA vless-ws-tls",
         "🇺🇸 LA grpc-reality",
+        "🇺🇸 LA hysteria2",
+        "🇺🇸 LA anytls",
         "🇺🇸 LA ShadowTLS"
       ]
     },
@@ -321,6 +373,8 @@
         "🇺🇸 LA xtls-reality",
         "🇺🇸 LA vless-ws-tls",
         "🇺🇸 LA grpc-reality",
+        "🇺🇸 LA hysteria2",
+        "🇺🇸 LA anytls",
         "🇺🇸 LA ShadowTLS"
       ],
       "url": "http://www.gstatic.com/generate_204",
@@ -331,29 +385,18 @@
       "type": "selector",
       "tag": "🤖 AI",
       "outbounds": [
-        "♻️ 自动选择",
-        "✈️ Proxy",
-        "🇺🇸 NY hysteria2",
         "🇺🇸 NY vless-ws-tls",
-        "🇺🇸 NY anytls",
         "🇺🇸 LA xtls-reality",
-        "🇺🇸 LA vless-ws-tls",
-        "🇺🇸 LA grpc-reality",
-        "🇺🇸 LA ShadowTLS"
+        "🇺🇸 LA vless-ws-tls"
       ]
     },
     {
       "type": "selector",
       "tag": "▶️ YouTube",
       "outbounds": [
-        "♻️ 自动选择",
-        "✈️ Proxy",
+        "🇺🇸 LA hysteria2",
         "🇺🇸 NY hysteria2",
-        "🇺🇸 NY vless-ws-tls",
-        "🇺🇸 NY anytls",
-        "🇺🇸 LA xtls-reality",
         "🇺🇸 LA vless-ws-tls",
-        "🇺🇸 LA grpc-reality",
         "🇺🇸 LA ShadowTLS"
       ]
     },
@@ -361,15 +404,9 @@
       "type": "selector",
       "tag": "📱 Telegram",
       "outbounds": [
-        "♻️ 自动选择",
-        "✈️ Proxy",
-        "🇺🇸 NY hysteria2",
-        "🇺🇸 NY vless-ws-tls",
-        "🇺🇸 NY anytls",
-        "🇺🇸 LA xtls-reality",
         "🇺🇸 LA vless-ws-tls",
-        "🇺🇸 LA grpc-reality",
-        "🇺🇸 LA ShadowTLS"
+        "🇺🇸 NY vless-ws-tls",
+        "🇺🇸 LA xtls-reality"
       ]
     },
     {
@@ -384,6 +421,8 @@
         "🇺🇸 LA xtls-reality",
         "🇺🇸 LA vless-ws-tls",
         "🇺🇸 LA grpc-reality",
+        "🇺🇸 LA hysteria2",
+        "🇺🇸 LA anytls",
         "🇺🇸 LA ShadowTLS"
       ]
     },
@@ -397,6 +436,7 @@
     }
   ],
   "route": {
+    "default_http_client": "http-client-direct",
     "rules": [
       {
         "action": "sniff"
@@ -473,7 +513,7 @@
       },
       {
         "rule_set": "geosite-geolocation-!cn",
-        "outbound": "♻️ 自动选择"
+        "outbound": "🚀 节点选择"
       }
     ],
     "rule_set": [
@@ -538,7 +578,7 @@
         "update_interval": "24h0m0s"
       }
     ],
-    "final": "🚀 节点选择",
+    "final": "♻️ 自动选择",
     "auto_detect_interface": true,
     "default_domain_resolver": "local"
   }
