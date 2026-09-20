@@ -1,0 +1,18 @@
+services:
+  keepalived:
+    image: osixia/keepalived
+    container_name: keepalived
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      - NET_BROADCAST
+    environment:
+      TZ: Asia/Shanghai
+      KEEPALIVED_ROUTER_ID: 50
+      KEEPALIVED_PRIORITY: 100
+      KEEPALIVED_STATE: MASTER
+      KEEPALIVED_INTERFACE: ens18
+      KEEPALIVED_VIRTUAL_IPS: 172.30.5.100
+      KEEPALIVED_UNICAST_PEERS: 172.30.5.102
+    restart: always

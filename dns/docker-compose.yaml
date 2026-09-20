@@ -1,0 +1,22 @@
+services:
+  dns-server:
+    container_name: dns-server
+    hostname: dns-server
+    image: docker.io/technitium/dns-server:latest
+    network_mode: "host"
+    environment:
+      - DNS_SERVER_DOMAIN=dns-server
+      - DNS_SERVER_ADMIN_PASSWORD=DNS0@frutech
+      - DNS_SERVER_FORWARDERS=223.5.5.5,119.29.29.29
+      - DNS_SERVER_FORWARDER_PROTOCOL=Udp
+      - DNS_SERVER_LOG_USING_LOCAL_TIME=true
+      - DNS_SERVER_LOG_FOLDER_PATH=/var/log/technitium/dns
+      - DNS_SERVER_LOG_MAX_LOG_FILE_DAYS=30
+    volumes:
+      - config:/etc/dns
+      - logs:/var/log/technitium/dns
+    restart: always
+
+volumes:
+    config:
+    logs:

@@ -1,0 +1,12 @@
+services:
+  nginx:
+    image: nginx:stable-alpine-slim
+    container_name: nginx
+    restart: unless-stopped
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./config/conf.d:/etc/nginx/conf.d
+    environment:
+      TZ: Asia/Shanghai
+      LANG: en_US.UTF-8
+    network_mode: host
