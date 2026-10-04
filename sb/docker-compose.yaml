@@ -1,0 +1,28 @@
+services:
+  proxy:
+    image: ghcr.io/sagernet/sing-box
+    container_name: proxy
+    restart: always
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - ./conf/proxy:/etc/sing-box/
+    command: -D /var/lib/sing-box -C /etc/sing-box/ run
+    ports:
+      - 7890:7890
+  derper:
+    image: ghcr.io/sagernet/sing-box
+    container_name: derper
+    restart: always
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - ./conf/derper:/etc/sing-box/
+      - data:/var/lib/sing-box/
+    command: -D /var/lib/sing-box -C /etc/sing-box/ run
+    ports:
+      - 3443:3443
+      - 3478:3478/udp
+
+volumes:
+    data:

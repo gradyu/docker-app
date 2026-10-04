@@ -1,0 +1,47 @@
+{
+  "log": {
+    "level": "info",
+    "timestamp": true
+  },
+  "endpoints": [
+    {
+      "type": "tailscale",
+      "tag": "ts-ep",
+      "hostname": "core",
+      "control_url": "https://hs.annieyu.com",
+      "auth_key": "hskey-auth-M-XUEHvifoHk-Y6iTAeNtXtoncbEL5gzrsXJxmeTkwXR9d_wuvMPAr1ykj4jnAsw0155idUObDl4d",
+      "ephemeral": false,
+      "system_interface": false,
+      "state_directory": "/var/lib/sing-box/tailscale"
+    }
+  ],
+  "services": [
+    {
+      "type": "derp",
+      "listen": "::",
+      "listen_port": 3443,
+      "tls": {
+        "enabled": true,
+        "certificate_path": "/etc/sing-box/certs/server.crt",
+        "key_path": "/etc/sing-box/certs/server.key"
+      },
+      "config_path": "/var/lib/sing-box/derp.key",
+      "verify_client_endpoint": "ts-ep",
+      "stun": {
+        "enabled": true,
+        "listen": "::",
+        "listen_port": 3478
+      }
+    }
+  ],
+  "outbounds": [
+    { "type": "direct", "tag": "direct" }
+  ],
+  "route": {
+    "auto_detect_interface": true,
+    "final": "direct",
+    "rules": [
+        { "ip_cidr": [ "100.64.0.0/10" ], "preferred_by": ["ts-ep"], "outbound": "ts-ep" },
+    ]
+  }
+}
