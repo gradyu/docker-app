@@ -1,6 +1,7 @@
 {
+  "$schema": "https://sing-box.sagernet.org/schema.json",
   "log": {
-    "level": "warn",
+    "level": "info",
     "timestamp": true
   },
   "experimental": {
@@ -12,7 +13,8 @@
     "clash_api": {
       "external_controller": "127.0.0.1:9090",
       "external_ui": "ui",
-      "default_mode": "rule"
+      "default_mode": "rule",
+      "external_ui_download_detour": "🚦 FINAL"
     }
   },
   "ntp": {
@@ -29,45 +31,137 @@
   "dns": {
     "servers": [
       {
-        "type": "tls",
-        "tag": "google",
-        "detour": "♻️ 自动选择",
-        "server": "8.8.8.8"
+        "type": "hosts",
+        "tag": "hosts",
+        "predefined": {
+          "dns.alidns.com": ["223.5.5.5", "223.6.6.6"],
+          "doh.pub": ["1.12.12.12", "120.53.53.53"],
+          "dns.google": ["8.8.8.8", "8.8.4.4"],
+          "cloudflare-dns.com": ["1.1.1.1", "1.0.0.1"]
+        }
       },
       {
         "type": "https",
-        "tag": "local",
-        "server": "223.5.5.5"
+        "tag": "ggdns",
+        "detour": "♻️ 自动选择",
+        "server": "dns.google",
+        "domain_resolver": "hosts"
+      },
+      {
+        "type": "https",
+        "tag": "cfdns",
+        "detour": "♻️ 自动选择",
+        "server": "cloudflare-dns.com",
+        "domain_resolver": "hosts"
+      },
+      {
+        "type": "https",
+        "tag": "alidns",
+        "server": "dns.alidns.com",
+        "domain_resolver": "hosts"
+      },
+      {
+        "type": "https",
+        "tag": "pubdns",
+        "server": "doh.pub",
+        "domain_resolver": "hosts"
       },
       {
         "type": "fakeip",
         "tag": "fakeip",
         "inet4_range": "198.18.0.0/15"
+      },
+      {
+        "type": "local",
+        "tag": "local",
+        "neighbor_domain": [".local", ".lan"]
       }
     ],
     "rules": [
+      {
+        "query_type": ["SVCB", "HTTPS", "PTR"],
+        "action": "predefined",
+        "rcode": "NOERROR"
+      },
+      {
+        "domain_suffix": [
+          ".pool.ntp.org",
+          ".nist.gov",
+          ".time.apple.com",
+          ".time.google.com",
+          ".time.windows.com"
+        ],
+        "server": "local"
+      },
+      {
+        "rule_set": [
+          "geosite-adguard",
+          "geosite-category-ads-all",
+          "anti-fraud"
+        ],
+        "action": "predefined",
+        "rcode": "NXDOMAIN"
+      },
+      {
+        "rule_set": ["geosite-microsoft@cn", "geosite-apple@cn", "geosite-cn"],
+        "action": "evaluate",
+        "server": "alidns",
+        "tag": "cn1"
+      },
+      {
+        "rule_set": ["geosite-microsoft@cn", "geosite-apple@cn", "geosite-cn"],
+        "action": "evaluate",
+        "server": "pubdns",
+        "tag": "cn2"
+      },
+      {
+        "match_response": "cn1",
+        "action": "respond",
+        "race": true
+      },
+      {
+        "match_response": "cn2",
+        "action": "respond",
+        "race": true
+      },
       {
         "clash_mode": "Direct",
         "server": "local"
       },
       {
         "clash_mode": "Global",
-        "server": "google"
+        "server": "fakeip"
+      },
+      {
+        "type": "logical",
+        "mode": "and",
+        "rules": [
+          { "query_type": ["A", "AAAA"] },
+          { "rule_set": "geosite-geolocation-!cn", "invert": true }
+        ],
+        "action": "evaluate",
+        "server": "cfdns",
+        "client_subnet": "223.5.5.0/24",
+        "timeout": "2s"
+      },
+      {
+        "match_response": true,
+        "rule_set": "geoip-cn",
+        "server": "alidns"
       },
       {
         "query_type": ["AAAA"],
-        "server": "block"
-      },
-      {
-        "rule_set": "geosite-cn",
-        "server": "local"
+        "action": "reject"
       },
       {
         "query_type": ["A"],
         "server": "fakeip"
       }
     ],
-    "strategy": "prefer_ipv4"
+    "final": "ggdns",
+    "strategy": "prefer_ipv4",
+    "optimistic": { "enabled": true },
+    "reverse_mapping": true
   },
   "inbounds": [
     {
@@ -345,37 +439,201 @@
       }
     },
     {
+      "type": "vless",
+      "tag": "🇬🇧 UK xtls-reality",
+      "server": "pan.annieyu.com",
+      "server_port": 8881,
+      "uuid": "211b03d8-ef10-4e2d-a547-1c3099d3cf6e",
+      "flow": "xtls-rprx-vision",
+      "tls": {
+        "enabled": true,
+        "server_name": "addons.mozilla.org",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        },
+        "reality": {
+          "enabled": true,
+          "public_key": "KXtqMGMUa78AQTNBgyIhVZJv_5bcisem0B5QPtAk5B4",
+          "short_id": ""
+        }
+      },
+      "multiplex": {
+        "enabled": false,
+        "protocol": "h2mux",
+        "max_connections": 8,
+        "min_streams": 16,
+        "padding": false,
+        "brutal": {
+          "enabled": false,
+          "up_mbps": 1000,
+          "down_mbps": 1000
+        }
+      }
+    },
+    {
+      "type": "tuic",
+      "tag": "🇬🇧 UK tuic",
+      "server": "pan.annieyu.com",
+      "server_port": 8882,
+      "uuid": "211b03d8-ef10-4e2d-a547-1c3099d3cf6e",
+      "password": "211b03d8-ef10-4e2d-a547-1c3099d3cf6e",
+      "congestion_control": "bbr",
+      "udp_relay_mode": "native",
+      "zero_rtt_handshake": false,
+      "heartbeat": "10s",
+      "tls": {
+        "enabled": true,
+        "server_name": "addons.mozilla.org",
+        "certificate_public_key_sha256": [
+          "hVe5KxHM8G8Zx88wISpsi0FyMROSakdCYAUMHuKjaJ4="
+        ],
+        "alpn": ["h3"]
+      }
+    },
+    {
+      "type": "vless",
+      "tag": "🇬🇧 UK vless-ws-tls",
+      "server": "skk.moe",
+      "server_port": 443,
+      "uuid": "211b03d8-ef10-4e2d-a547-1c3099d3cf6e",
+      "tls": {
+        "enabled": true,
+        "server_name": "sbc.annieyu.com",
+        "insecure": false,
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/211b03d8-ef10-4e2d-a547-1c3099d3cf6e-vless",
+        "headers": {
+          "Host": "sbc.annieyu.com"
+        },
+        "max_early_data": 2560,
+        "early_data_header_name": "Sec-WebSocket-Protocol"
+      },
+      "multiplex": {
+        "enabled": true,
+        "protocol": "h2mux",
+        "max_streams": 16,
+        "padding": true,
+        "brutal": {
+          "enabled": false,
+          "up_mbps": 1000,
+          "down_mbps": 1000
+        }
+      }
+    },
+    {
+      "type": "anytls",
+      "tag": "🇬🇧 UK anytls",
+      "server": "pan.annieyu.com",
+      "server_port": 8884,
+      "password": "211b03d8-ef10-4e2d-a547-1c3099d3cf6e",
+      "idle_session_check_interval": "30s",
+      "idle_session_timeout": "30s",
+      "min_idle_session": 5,
+      "tls": {
+        "enabled": true,
+        "certificate_public_key_sha256": [
+          "hVe5KxHM8G8Zx88wISpsi0FyMROSakdCYAUMHuKjaJ4="
+        ],
+        "server_name": "addons.mozilla.org",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      }
+    },
+    {
       "type": "selector",
       "tag": "🚀 节点选择",
       "outbounds": [
         "♻️ 自动选择",
         "🎯 direct",
-        "🇺🇸 NY hysteria2",
-        "🇺🇸 NY vless-ws-tls",
-        "🇺🇸 NY anytls",
         "🇭🇰 HK xtls-reality",
         "🇺🇸 LA xtls-reality",
         "🇺🇸 LA vless-ws-tls",
         "🇺🇸 LA grpc-reality",
         "🇺🇸 LA hysteria2",
         "🇺🇸 LA anytls",
-        "🇺🇸 LA ShadowTLS"
-      ]
+        "🇺🇸 LA ShadowTLS",
+        "🇺🇸 NY hysteria2",
+        "🇺🇸 NY vless-ws-tls",
+        "🇺🇸 NY anytls",
+        "🇬🇧 UK anytls",
+        "🇬🇧 UK tuic",
+        "🇬🇧 UK xtls-reality",
+        "🇬🇧 UK vless-ws-tls"
+      ],
+      "default": "🇺🇸 LA anytls",
+      "interrupt_exist_connections": true
     },
     {
       "type": "urltest",
       "tag": "♻️ 自动选择",
       "outbounds": [
-        "🇺🇸 NY hysteria2",
-        "🇺🇸 NY vless-ws-tls",
-        "🇺🇸 NY anytls",
         "🇭🇰 HK xtls-reality",
         "🇺🇸 LA xtls-reality",
         "🇺🇸 LA vless-ws-tls",
         "🇺🇸 LA grpc-reality",
         "🇺🇸 LA hysteria2",
         "🇺🇸 LA anytls",
-        "🇺🇸 LA ShadowTLS"
+        "🇺🇸 LA ShadowTLS",
+        "🇺🇸 NY hysteria2",
+        "🇺🇸 NY vless-ws-tls",
+        "🇺🇸 NY anytls",
+        "🇬🇧 UK anytls",
+        "🇬🇧 UK tuic",
+        "🇬🇧 UK xtls-reality",
+        "🇬🇧 UK vless-ws-tls"
+      ],
+      "url": "http://www.gstatic.com/generate_204",
+      "interval": "5m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "urltest",
+      "tag": "🇭🇰 Hong Kong",
+      "outbounds": ["🇭🇰 HK xtls-reality"],
+      "url": "http://www.gstatic.com/generate_204",
+      "interval": "5m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "urltest",
+      "tag": "🇺🇸 Los Angeles",
+      "outbounds": [
+        "🇺🇸 LA xtls-reality",
+        "🇺🇸 LA vless-ws-tls",
+        "🇺🇸 LA anytls",
+        "🇺🇸 LA ShadowTLS",
+        "🇺🇸 LA hysteria2",
+        "🇺🇸 LA grpc-reality"
+      ],
+      "url": "http://www.gstatic.com/generate_204",
+      "interval": "5m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "urltest",
+      "tag": "🇺🇸 New York",
+      "outbounds": ["🇺🇸 NY vless-ws-tls", "🇺🇸 NY hysteria2", "🇺🇸 NY anytls"],
+      "url": "http://www.gstatic.com/generate_204",
+      "interval": "5m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "urltest",
+      "tag": "🇬🇧 London",
+      "outbounds": [
+        "🇬🇧 UK anytls",
+        "🇬🇧 UK tuic",
+        "🇬🇧 UK xtls-reality",
+        "🇬🇧 UK vless-ws-tls"
       ],
       "url": "http://www.gstatic.com/generate_204",
       "interval": "5m0s",
@@ -385,36 +643,57 @@
       "type": "selector",
       "tag": "🤖 AI",
       "outbounds": [
-        "🇺🇸 NY vless-ws-tls",
-        "🇺🇸 LA xtls-reality",
-        "🇺🇸 LA vless-ws-tls"
+        "🇬🇧 UK xtls-reality",
+        "🇺🇸 LA vless-ws-tls",
+        "🇺🇸 NY vless-ws-tls"
       ]
     },
     {
       "type": "selector",
       "tag": "▶️ YouTube",
-      "outbounds": [
-        "🇺🇸 LA hysteria2",
-        "🇺🇸 NY hysteria2",
-        "🇺🇸 LA vless-ws-tls",
-        "🇺🇸 LA ShadowTLS"
-      ]
+      "outbounds": ["🇬🇧 UK tuic", "🇺🇸 LA hysteria2", "🇺🇸 NY hysteria2"]
     },
     {
       "type": "selector",
       "tag": "📱 Telegram",
       "outbounds": [
+        "🇬🇧 UK xtls-reality",
         "🇺🇸 LA vless-ws-tls",
-        "🇺🇸 NY vless-ws-tls",
-        "🇺🇸 LA xtls-reality"
+        "🇺🇸 NY vless-ws-tls"
       ]
+    },
+    {
+      "type": "selector",
+      "tag": "📳 Twitter",
+      "outbounds": [
+        "🇬🇧 UK xtls-reality",
+        "🇺🇸 LA vless-ws-tls",
+        "🇺🇸 NY vless-ws-tls"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "🍎 Apple",
+      "outbounds": ["🎯 direct", "♻️ 自动选择"]
+    },
+    {
+      "type": "selector",
+      "tag": "🪟 Microsoft",
+      "outbounds": ["🎯 direct", "♻️ 自动选择"]
+    },
+    {
+      "type": "selector",
+      "tag": "🇨🇳 国内流量",
+      "outbounds": ["🎯 direct", "♻️ 自动选择"]
     },
     {
       "type": "selector",
       "tag": "✈️ Proxy",
       "outbounds": [
+        "🚀 节点选择",
         "♻️ 自动选择",
         "🎯 direct",
+        "🇭🇰 HK xtls-reality",
         "🇺🇸 NY hysteria2",
         "🇺🇸 NY vless-ws-tls",
         "🇺🇸 NY anytls",
@@ -423,8 +702,17 @@
         "🇺🇸 LA grpc-reality",
         "🇺🇸 LA hysteria2",
         "🇺🇸 LA anytls",
-        "🇺🇸 LA ShadowTLS"
+        "🇺🇸 LA ShadowTLS",
+        "🇬🇧 UK anytls",
+        "🇬🇧 UK tuic",
+        "🇬🇧 UK xtls-reality",
+        "🇬🇧 UK vless-ws-tls"
       ]
+    },
+    {
+      "type": "selector",
+      "tag": "🚦 FINAL",
+      "outbounds": ["🎯 direct", "🚀 节点选择", "♻️ 自动选择", "❌ block"]
     },
     {
       "type": "direct",
@@ -432,7 +720,7 @@
     },
     {
       "type": "block",
-      "tag": "block"
+      "tag": "❌ block"
     }
   ],
   "route": {
@@ -454,26 +742,38 @@
         "action": "hijack-dns"
       },
       {
-        "rule_set": "geosite-category-ads-all",
-        "action": "reject"
-      },
-      {
-        "rule_set": ["geosite-cn", "geoip-cn"],
-        "outbound": "🎯 direct"
-      },
-      {
         "ip_is_private": true,
         "outbound": "🎯 direct"
       },
       {
-        "domain_suffix": [
-          ".home.com",
-          ".grady.com",
-          ".annieyu.com",
-          ".yhwei.cc.cd",
-          ".frutech.com.cn"
+        "ip_cidr": [
+          "192.168.0.0/16",
+          "172.16.0.0/12",
+          "10.0.0.0/8",
+          "127.0.0.0/8"
         ],
         "outbound": "🎯 direct"
+      },
+      {
+        "domain_suffix": [
+          "home.com",
+          "grady.com",
+          "annieyu.com",
+          "yhwei.cc.cd",
+          "frutech.com.cn"
+        ],
+        "outbound": "🎯 direct"
+      },
+      {
+        "type": "logical",
+        "mode": "or",
+        "rules": [
+          { "protocol": ["quic", "stun", "dtls"] },
+          { "network": "udp", "port": 443 },
+          { "port": [853, 3478] }
+        ],
+        "action": "reject",
+        "no_drop": true
       },
       {
         "type": "logical",
@@ -508,77 +808,88 @@
         "outbound": "▶️ YouTube"
       },
       {
-        "rule_set": "geosite-telegram",
+        "rule_set": ["geosite-telegram", "telegram-ip"],
         "outbound": "📱 Telegram"
       },
       {
+        "rule_set": "geosite-twitter",
+        "outbound": "📳 Twitter"
+      },
+      {
+        "rule_set": "geosite-microsoft@cn",
+        "outbound": "🪟 Microsoft"
+      },
+      {
+        "rule_set": "geosite-apple@cn",
+        "outbound": "🍎 Apple"
+      },
+      {
+        "rule_set": [
+          "geosite-category-ads-all",
+          "geosite-adguard",
+          "anti-fraud"
+        ],
+        "action": "reject"
+      },
+      {
+        "rule_set": ["geosite-cn", "geoip-cn"],
+        "outbound": "🇨🇳 国内流量"
+      },
+      {
         "rule_set": "geosite-geolocation-!cn",
-        "outbound": "🚀 节点选择"
+        "outbound": "♻️ 自动选择"
+      },
+      {
+        "protocol": "ntp",
+        "outbound": "🎯 direct"
+      },
+      {
+        "action": "route-options",
+        "udp_disable_domain_unmapping": true,
+        "udp_connect": true
       }
     ],
     "rule_set": [
       {
         "type": "remote",
-        "tag": "geosite-category-ads-all",
-        "url": "https://testingcf.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+        "tag": [
+          "geosite-cn",
+          "geosite-openai",
+          "geosite-anthropic",
+          "geosite-google-gemini",
+          "geosite-twitter",
+          "geosite-youtube",
+          "geosite-netflix",
+          "geosite-telegram",
+          "geosite-microsoft@cn",
+          "geosite-apple@cn",
+          "geosite-geolocation-!cn",
+          "geosite-adguard",
+          "geosite-category-ads-all"
+        ],
+        "url": "https://cdn.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/{tag}.srs",
         "update_interval": "24h0m0s"
       },
       {
         "type": "remote",
-        "tag": "geosite-cn",
-        "url": "https://testingcf.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+        "tag": ["geoip-cn"],
+        "url": "https://cdn.jsdelivr.net/gh/SagerNet/sing-geoip@rule-set/{tag}.srs",
         "update_interval": "24h0m0s"
       },
       {
         "type": "remote",
-        "tag": "geoip-cn",
-        "url": "https://testingcf.jsdelivr.net/gh/SagerNet/sing-geoip@rule-set/geoip-cn.srs",
-        "update_interval": "24h0m0s"
+        "tag": "anti-fraud",
+        "url": "https://cdn.jsdelivr.net/gh/hwsaya/nothing@main/rules/FuckFZ.json",
+        "update_interval": "48h0m0s"
       },
       {
         "type": "remote",
-        "tag": "geosite-openai",
-        "url": "https://testingcf.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-openai.srs",
-        "update_interval": "24h0m0s"
-      },
-      {
-        "type": "remote",
-        "tag": "geosite-anthropic",
-        "url": "https://testingcf.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-anthropic.srs",
-        "update_interval": "24h0m0s"
-      },
-      {
-        "type": "remote",
-        "tag": "geosite-google-gemini",
-        "url": "https://testingcf.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-google-gemini.srs",
-        "update_interval": "24h0m0s"
-      },
-      {
-        "type": "remote",
-        "tag": "geosite-youtube",
-        "url": "https://testingcf.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-youtube.srs",
-        "update_interval": "24h0m0s"
-      },
-      {
-        "type": "remote",
-        "tag": "geosite-netflix",
-        "url": "https://testingcf.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-netflix.srs",
-        "update_interval": "24h0m0s"
-      },
-      {
-        "type": "remote",
-        "tag": "geosite-telegram",
-        "url": "https://testingcf.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-telegram.srs",
-        "update_interval": "24h0m0s"
-      },
-      {
-        "type": "remote",
-        "tag": "geosite-geolocation-!cn",
-        "url": "https://testingcf.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-geolocation-!cn.srs",
-        "update_interval": "24h0m0s"
+        "tag": "telegram-ip",
+        "url": "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geoip/telegram.srs",
+        "update_interval": "48h0m0s"
       }
     ],
-    "final": "♻️ 自动选择",
+    "final": "🚦 FINAL",
     "auto_detect_interface": true,
     "default_domain_resolver": "local"
   }
